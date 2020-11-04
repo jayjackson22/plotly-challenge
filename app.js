@@ -37,14 +37,13 @@ d3.json("samples.json").then((incomingData) => {
             tableData.text(`${key}: ${value}`)
         })
         
+        
         //Process samples data
         var samples = incomingData.samples
+        //Filter to selected ID
         var filteredSample = samples.filter(d => d.id == selectedId)[0]
 
-        // var sortedd = filteredSample.sort(function(a,b) {
-        //     return parseFloat(b.sample_values)-parseFloat(a.sample_values);
-        // });
-
+        //Create dataset
         var dataSet = []
         for (var i=0; i<10;i++) {
             dataSet.push({
@@ -54,8 +53,10 @@ d3.json("samples.json").then((incomingData) => {
             })
         };
 
+        //Reverse dataset
         var dataSet = dataSet.reverse();
 
+        //Create trace for plot
         var trace1 = {
             x: dataSet.map(row => row.sampleValue),
             y: dataSet.map(row => row.sampleTitle),
@@ -78,6 +79,32 @@ d3.json("samples.json").then((incomingData) => {
         };
 
         Plotly.newPlot("bar", chartData, layout);
+        console.log(filteredSample)
+
+        //Bubble Chart
+        var trace2 = {
+            x: filteredSample.otu_ids,
+            y: filteredSample.sample_values,
+            text: filteredSample.otu_labels,
+            mode: 'markers',
+            marker: {
+              color: filteredSample.otu_ids,
+              opacity: filteredSample.otu_ids,
+              size: filteredSample.sample_values
+            }
+          };
+          
+          var dataa = [trace2];
+          
+          var layout = {
+            title: 'Marker Size and Color',
+            showlegend: false,
+            height: 600,
+            width: 600
+          };
+          
+          Plotly.newPlot('bubble', dataa, layout);
+        
         
     }
 })
